@@ -75,5 +75,14 @@ journalctl -u login-notifier --no-pager | grep -q "missing required field 'bot_t
 sleep 6; [ "$(systemctl is-active login-notifier)" = failed ] || fail "restart-looped on bad config"
 echo "ok: missing field stops service with a clear error"
 
+echo '{"bot_token": "1:TEST", "chat_id": "42", "api_base": "http://127.0.0.1:8081"}' > /etc/login-notifier/config.json
+rm -rf /opt/login-notifier && cp -a /src /opt/login-notifier
+sh /opt/login-notifier/install.sh >/dev/null || fail "install from a clone at /opt/login-notifier"
+systemctl restart login-notifier
+wait_for '[ "$(systemctl is-active login-notifier)" = active ]' "service not running after in-place install"
+n=$(msgs); login root
+wait_for '[ "$(msgs)" -eq $((n+1)) ]' "no notification after in-place install"
+echo "ok: install.sh works when run from a clone at /opt/login-notifier"
+
 echo "ALL INTEGRATION CHECKS PASSED"
 EOF

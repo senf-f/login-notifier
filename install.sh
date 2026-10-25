@@ -8,10 +8,14 @@ fi
 command -v python3 >/dev/null || { echo "python3 is required" >&2; exit 1; }
 command -v journalctl >/dev/null || { echo "systemd/journalctl is required" >&2; exit 1; }
 
-src=$(cd "$(dirname "$0")" && pwd)
+src=$(cd "$(dirname "$0")" && pwd -P)
+dest=/opt/login-notifier
 
-install -d -m 755 /opt/login-notifier/login_notifier
-install -m 644 "$src"/login_notifier/*.py /opt/login-notifier/login_notifier/
+# Running from a clone at $dest means the code is already in place.
+if [ "$src" != "$(cd "$dest" 2>/dev/null && pwd -P)" ]; then
+    install -d -m 755 "$dest/login_notifier"
+    install -m 644 "$src"/login_notifier/*.py "$dest/login_notifier/"
+fi
 
 install -d -m 700 -o root -g root /etc/login-notifier
 if [ ! -e /etc/login-notifier/config.json ]; then
