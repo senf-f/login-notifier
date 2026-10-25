@@ -1,0 +1,7 @@
+{
+  "bot_token": "123456789:REPLACE_WITH_YOUR_BOT_TOKEN",
+  "chat_id": "123456789",
+  "whitelist": [],
+  "blacklist": [],
+  "log_level": "INFO"
+}
