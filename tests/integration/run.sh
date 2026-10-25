@@ -2,9 +2,10 @@
 # End-to-end test: install into a systemd container, log in over SSH, check the mock Telegram API.
 set -eu
 cd "$(dirname "$0")/../.."
+base=${1:-debian:12}
 name=login-notifier-it
 
-docker build -q -t "$name" tests/integration >/dev/null
+docker build -q --build-arg BASE="$base" -t "$name" tests/integration >/dev/null
 docker rm -f "$name" >/dev/null 2>&1 || true
 docker run -d --name "$name" --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$name" >/dev/null
 trap 'docker rm -f "$name" >/dev/null' EXIT

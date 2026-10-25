@@ -15,8 +15,8 @@ message, and the position in the journal is saved so restarts neither miss nor r
 
 ## Prerequisites
 
-- Linux with systemd/journald (tested on Debian 12; Ubuntu 22.04+ and Debian 13 work the same way)
-- Python 3.10+ (`python3`, no extra packages)
+- Linux with systemd/journald (tested on Debian 11 and 12; Ubuntu 20.04+ and Debian 13 work the same way)
+- Python 3.8+ (`python3`, no extra packages)
 - Root access
 - An existing Telegram bot
 
@@ -67,7 +67,7 @@ refuses to start. If a required field is missing, it exits with an error naming 
 Changes to `whitelist`, `blacklist` and `log_level` take effect on the next login, with no restart needed.
 If you save an invalid config while the service is running, the error is logged and the previous config stays in use.
 
-Check the setup by sending a test message:
+Check the setup by sending a test message (needs `sudo`, because the config is readable only by root):
 
 ```sh
 sudo PYTHONPATH=/opt/login-notifier python3 -m login_notifier --test
@@ -111,9 +111,9 @@ in the journal, so `journalctl -u login-notifier -p warning` shows only problems
 
 ```sh
 python3 -m unittest discover -s tests -t .    # unit tests
-sh tests/integration/run.sh                   # full install test in a systemd container (needs Docker)
+sh tests/integration/run.sh [debian:11]      # full install test in a systemd container (needs Docker)
 ```
 
-The integration test installs into a Debian 12 container, replaces Telegram with a local mock
+The integration test installs into a Debian container (default `debian:12`), replaces Telegram with a local mock
 (`api_base` config key), and checks the install, permissions, SSH notification, deduplication,
 live config reload, journal severity, crash restart, and resume-after-restart.

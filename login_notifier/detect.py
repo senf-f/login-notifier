@@ -4,6 +4,7 @@ import re
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Optional
 
 SSHD_IDENTIFIERS = ("sshd", "sshd-session")
 LOCAL_IDENTIFIERS = ("login",)
@@ -22,9 +23,9 @@ class JournalError(Exception):
 class LoginEvent:
     username: str
     timestamp: datetime
-    source_ip: str | None
+    source_ip: Optional[str]
     service: str
-    method: str | None = None
+    method: Optional[str] = None
 
 
 def _timestamp(entry):
